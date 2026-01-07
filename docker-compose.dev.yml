@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ajudae_mysql_dev
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ajudae_db
+      MYSQL_USER: ajudae_user
+      MYSQL_PASSWORD: ajudae_password
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+    networks:
+      - ajudae_network
+
+  api:
+    image: node:18-alpine
+    container_name: ajudae_api_dev
+    restart: always
+    working_dir: /app
+    ports:
+      - '3000:3000'
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: ajudae_user
+      DB_PASSWORD: ajudae_password
+      DB_NAME: ajudae_db
+      JWT_SECRET: sua_chave_secreta_jwt_muito_segura_aqui
+      PORT: 3000
+    depends_on:
+      - mysql
+    networks:
+      - ajudae_network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run start:dev"
+
+volumes:
+  mysql_data_dev:
+
+networks:
+  ajudae_network:
+    driver: bridge
