@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -13,11 +14,11 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { User } from '../entities/user.entity';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { CombinedAuthGuard } from '../guards/combined-auth.guard';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
-@UseGuards(JwtAuthGuard)
+@UseGuards(CombinedAuthGuard)
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
@@ -30,8 +31,16 @@ export class PostsController {
   }
 
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  findAll(
+    @Query('search') search?: string,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+  ) {
+    return this.postsService.findAll({
+      search: search || '',
+      page: page ? parseInt(page, 10) : 1,
+      pageSize: pageSize ? parseInt(pageSize, 10) : 10,
+    });
   }
 
   @Get(':id')

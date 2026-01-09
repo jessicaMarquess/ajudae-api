@@ -13,9 +13,14 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors();
+  app.enableCors({
+    origin: '*', // Permite requisições de qualquer origem
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    allowedHeaders: 'Content-Type,Authorization,x-api-key',
+  });
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
   console.log(`Aplicação rodando na porta ${process.env.PORT ?? 3000}`);
 }
 bootstrap().catch((error) =>

@@ -1,233 +1,153 @@
-# AjudAE API<p align="center">
+# AjudAE API
 
-<a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+API REST construída com NestJS para gerenciar posts, professores e alunos, com autenticação via JWT e opção de API Key.
 
-API REST desenvolvida com NestJS para gerenciamento de posts, professores e alunos com sistema de autenticação JWT.</p>
+## Funcionalidades
 
-## Funcionalidades[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+- Autenticação JWT (login e registro)
+- CRUD de usuários (professores e alunos)
+- CRUD de posts com regras de permissão
+- Filtro e paginação de posts (`search`, `page`, `pageSize`)
 
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Stack
 
-- ✅ Autenticação JWT (login/registro)
+- NestJS
+- TypeORM
+- MySQL
+- Docker / Docker Compose
+- JWT (com `@nestjs/jwt`)
 
-- ✅ CRUD de usuários (professores e alunos) <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+## Como rodar
 
-- ✅ CRUD de posts com validação de permissões <p align="center">
-
-- ✅ Validação de roles (professores podem CRUD posts, alunos apenas READ)<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-
-## Tecnologias<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-
-- NestJS<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-
-- TypeORM<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-
-- MySQL<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-
-- JWT <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-
-- bcryptjs <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-
-- class-validator <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-
-</p>
-
-## Configuração <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-
-[![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-1. Clone o repositório
-
-2. Instale as dependências:## Description
+### Dev (hot-reload)
 
 ```bash
+docker compose -f docker-compose.dev.yml up -d --build
 
-npm install[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
+# opcional: ver logs
+docker logs -f ajudae_api_dev
 ```
 
-## Project setup
-
-3. Configure o banco de dados no arquivo `.env` (copie de `.env.example`):
-
-`bash`bash
-
-cp .env.example .env$ npm install
-
-````
-
-
-
-4. Configure seu banco MySQL e atualize as variáveis no `.env`## Compile and run the project
-
-
-
-5. Execute a aplicação:```bash
-
-```bash# development
-
-npm run start:dev$ npm run start
-
-```
-
-# watch mode
-
-## Endpoints$ npm run start:dev
-
-
-
-### Autenticação# production mode
-
-$ npm run start:prod
-
-- `POST /auth/register` - Registrar novo usuário```
-
-- `POST /auth/login` - Login de usuário
-
-## Run tests
-
-### Usuários
+### Prod (build + dist)
 
 ```bash
+docker compose up -d --build
 
-- `GET /users` - Listar todos os usuários (autenticado)# unit tests
+# opcional: ver logs
+docker logs -f ajudae_api
+```
 
-- `GET /users/professores` - Listar todos os professores (autenticado)$ npm run test
+### Seed do banco
 
-- `GET /users/alunos` - Listar todos os alunos (autenticado)
+Após subir os serviços, rode o seed para criar usuários e posts de exemplo.
 
-- `GET /users/:id` - Buscar usuário por ID (autenticado)# e2e tests
+Dev:
 
-- `POST /users` - Criar novo usuário (autenticado)$ npm run test:e2e
+```bash
+docker exec -it ajudae_api_dev npm run seed
+```
 
-- `PATCH /users/:id` - Atualizar usuário (autenticado)
+Prod:
 
-- `DELETE /users/:id` - Remover usuário (autenticado)# test coverage
+```bash
+docker exec -it ajudae_api npm run seed
+```
 
-$ npm run test:cov
+Credenciais criadas pelo seed:
 
-### Posts```
-
-
-
-- `GET /posts` - Listar todos os posts (autenticado)## Deployment
-
-- `GET /posts/:id` - Buscar post por ID (autenticado)
-
-- `POST /posts` - Criar novo post (apenas professores)When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-- `PATCH /posts/:id` - Atualizar post (apenas o professor autor)
-
-- `DELETE /posts/:id` - Remover post (apenas o professor autor)If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-
+- Professor: `prof.silva@escola.com` / `123456`
+- Professor: `prof.maria@escola.com` / `123456`
+- Professor: `prof.carlos@escola.com` / `123456`
+- Aluno: `ana.costa@aluno.com` / `123456` (entre outros)
 
 ## Autenticação
 
-### JWT Authentication
-Para endpoints que exigem autenticação JWT, inclua o token no header:
-```
-Authorization: Bearer SEU_JWT_TOKEN
-```
+Você pode usar JWT ou uma API Key fixa para testes.
 
-### API Key Authentication
-Para endpoints `/api/*`, use API Key no header:
+### JWT
+
+Header:
+
 ```
-X-API-Key: ak_test_12345_permanent_key_for_frontend_testing
+Authorization: Bearer <TOKEN>
 ```
 
-A API Key está configurada no arquivo `.env`:
+Obtenha o token com `POST /auth/login`.
+
+### API Key (para endpoints `/api/*`)
+
+Header:
+
 ```
-API_KEY=ak_test_12345_permanent_key_for_frontend_testing
+x-api-key: ak_test_12345_permanent_key_for_frontend_testing
 ```
 
-## Exemplos de Uso```bash
+## Endpoints
 
-$ npm install -g @nestjs/mau
+A documentação completa está em `ENDPOINTS.md`.
 
-### Registro de usuário$ mau deploy
+Principais exemplos:
 
-```json```
+```bash
+# Health
+curl http://localhost:3000/
 
-POST /auth/register
+# Login
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"prof.silva@escola.com","password":"123456"}'
 
-{With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+# Listar posts (JWT)
+curl -H "Authorization: Bearer <TOKEN>" \
+  http://localhost:3000/posts
 
-  "email": "professor@exemplo.com",
+# Filtro de posts por título (case-insensitive)
+curl -H "Authorization: Bearer <TOKEN>" \
+  "http://localhost:3000/posts?search=prog&page=1&pageSize=10"
+```
 
-  "password": "senha123",## Resources
-
-  "name": "Professor Teste",
-
-  "role": "professor"Check out a few resources that may come in handy when working with NestJS:
-
-}
-
-```- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-
-### Login- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-
-```json- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-
-POST /auth/login- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-
-{- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-
-  "email": "professor@exemplo.com",- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-
-  "password": "senha123"- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-}
-
-```## Support
-
-
-
-### Criação de post (com Bearer token)Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Observação: atualmente o endpoint retorna um objeto com paginação:
 
 ```json
-
-POST /posts## Stay in touch
-
-Authorization: Bearer SEU_JWT_TOKEN
-
-{- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-
-  "title": "Título do Post",- Website - [https://nestjs.com](https://nestjs.com/)
-
-  "content": "Conteúdo do post aqui..."- Twitter - [@nestframework](https://twitter.com/nestframework)
-
+{
+  "data": [{ "id": 1, "title": "..." }],
+  "total": 8,
+  "page": 1,
+  "pageSize": 10
 }
+```
 
-```## License
-
-
-
-## Roles e PermissõesNest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-
-
-- **Professor**: Pode criar, editar, deletar e visualizar posts (apenas os próprios)
-- **Aluno**: Pode apenas visualizar posts
-
-## Estrutura do Projeto
+## Estrutura do projeto
 
 ```
 src/
-├── auth/                 # Módulo de autenticação
-├── users/                # Módulo de usuários
-├── posts/                # Módulo de posts
-├── entities/             # Entidades TypeORM
-├── dto/                  # Data Transfer Objects
-├── guards/               # Guards de autenticação/autorização
-├── decorators/           # Decorators customizados
-├── app.module.ts         # Módulo principal
-└── main.ts              # Entry point
+├── auth/
+├── users/
+├── posts/
+├── entities/
+├── dto/
+├── guards/
+├── decorators/
+├── app.module.ts
+└── main.ts
 ```
-````
-# ajudae-api
+
+## Scripts úteis
+
+```bash
+# rodar em dev local (fora do Docker)
+npm install
+npm run start:dev
+
+# rodar testes
+npm run test
+npm run test:e2e
+
+# lint/format
+npm run lint
+npm run format
+```
+
+---
+
+Se algo não funcionar como esperado, verifique se o container correto está rodando (dev: `ajudae_api_dev`, prod: `ajudae_api`) e se o seed foi executado.

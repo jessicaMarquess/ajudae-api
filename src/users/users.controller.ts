@@ -10,14 +10,14 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserRole } from '../entities/user.entity';
+import { CombinedAuthGuard } from '../guards/combined-auth.guard';
 import { UsersService } from './users.service';
 
 @Controller('users')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(CombinedAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

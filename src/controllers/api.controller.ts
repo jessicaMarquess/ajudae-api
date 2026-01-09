@@ -13,11 +13,11 @@ import {
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserRole } from '../entities/user.entity';
-import { SimpleApiKeyGuard } from '../guards/simple-api-key.guard';
+import { CombinedAuthGuard } from '../guards/combined-auth.guard';
 import { UsersService } from '../users/users.service';
 
 @Controller('api')
-@UseGuards(SimpleApiKeyGuard)
+@UseGuards(CombinedAuthGuard)
 export class ApiController {
   constructor(private readonly usersService: UsersService) {}
 

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestMiddleware } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -7,9 +7,17 @@ import { AuthModule } from './auth/auth.module';
 import { ApiController } from './controllers/api.controller';
 import { Post } from './entities/post.entity';
 import { User } from './entities/user.entity';
-import { SimpleApiKeyGuard } from './guards/simple-api-key.guard';
+import { CombinedAuthGuard } from './guards/combined-auth.guard';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
+
+export class LoggingMiddleware implements NestMiddleware {
+  use(req: any, res: any, next: any) {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    console.log('Headers:', req.headers);
+    next();
+  }
+}
 
 @Module({
   imports: [
@@ -33,6 +41,10 @@ import { UsersModule } from './users/users.module';
     PostsModule,
   ],
   controllers: [AppController, ApiController],
-  providers: [AppService, SimpleApiKeyGuard],
+  providers: [AppService, CombinedAuthGuard],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('*');
+  }
+}

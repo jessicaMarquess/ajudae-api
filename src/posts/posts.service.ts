@@ -31,18 +31,38 @@ export class PostsService {
     return await this.postRepository.save(post);
   }
 
-  async findAll(): Promise<Post[]> {
-    return await this.postRepository.find({
-      relations: ['author'],
-      select: {
-        author: {
-          id: true,
-          name: true,
-          email: true,
-          role: true,
-        },
-      },
-    });
+  async findAll(options?: {
+    search?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<{ data: Post[]; total: number; page: number; pageSize: number }> {
+    const search = options?.search?.trim() || '';
+    const page = options?.page || 1;
+    const pageSize = options?.pageSize || 10;
+    const skip = (page - 1) * pageSize;
+
+    let query = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.author', 'author')
+      .orderBy('post.createdAt', 'DESC');
+
+    if (search) {
+      query = query.where('LOWER(post.title) LIKE LOWER(:search)', {
+        search: `%${search}%`,
+      });
+    }
+
+    const [data, total] = await query
+      .skip(skip)
+      .take(pageSize)
+      .getManyAndCount();
+
+    return {
+      data,
+      total,
+      page,
+      pageSize,
+    };
   }
 
   async findOne(id: number): Promise<Post> {
